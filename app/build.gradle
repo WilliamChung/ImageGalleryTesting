@@ -29,4 +29,8 @@ dependencies {
     //Design library for Coordinator layout
     compile 'com.android.support:design:26.1.0'
 
+    //BottomNavigationLibrary
+    compile 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
+    compile "com.android.support:design:26.+"
+
 }
