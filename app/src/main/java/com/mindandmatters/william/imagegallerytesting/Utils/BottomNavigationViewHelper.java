@@ -8,12 +8,12 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.mindandmatters.william.imagegallerytesting.MainActivity;
-import com.mindandmatters.william.imagegallerytesting.NotificationsActivity;
-import com.mindandmatters.william.imagegallerytesting.ProfileActivity;
+import com.mindandmatters.william.imagegallerytesting.Main.MainActivity;
+import com.mindandmatters.william.imagegallerytesting.Notifications.NotificationsActivity;
+import com.mindandmatters.william.imagegallerytesting.Profile.ProfileActivity;
 import com.mindandmatters.william.imagegallerytesting.R;
-import com.mindandmatters.william.imagegallerytesting.SearchActivity;
-import com.mindandmatters.william.imagegallerytesting.ShareActivity;
+import com.mindandmatters.william.imagegallerytesting.Search.SearchActivity;
+import com.mindandmatters.william.imagegallerytesting.Share.ShareActivity;
 
 /**
  * Created by lappy on 2018-03-15.

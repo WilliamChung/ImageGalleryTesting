@@ -1,4 +1,4 @@
-package com.mindandmatters.william.imagegallerytesting;
+package com.mindandmatters.william.imagegallerytesting.Notifications;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,16 +9,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.mindandmatters.william.imagegallerytesting.R;
 import com.mindandmatters.william.imagegallerytesting.Utils.BottomNavigationViewHelper;
 
 /**
  * Created by lappy on 2018-03-21.
  */
 
-public class SearchActivity extends AppCompatActivity {
-    private static final String TAG = "SearchActivity";
-    private Context mContext = SearchActivity.this;
-    private static final int ACTIVITY_NUM = 1;
+public class NotificationsActivity extends AppCompatActivity {
+    private static final String TAG = "NotificationsActivity";
+    private Context mContext = NotificationsActivity.this;
+    private static final int ACTIVITY_NUM = 3;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
