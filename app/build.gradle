@@ -33,4 +33,7 @@ dependencies {
     compile 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     compile "com.android.support:design:26.+"
 
+    //circle imageView
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
 }
