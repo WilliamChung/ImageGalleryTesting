@@ -1,4 +1,4 @@
-package com.mindandmatters.william.imagegallerytesting.Main;
+package com.mindandmatters.william.imagegallerytesting.Utils;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
