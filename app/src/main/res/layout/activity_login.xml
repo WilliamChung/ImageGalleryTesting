@@ -85,8 +85,8 @@
         android:textSize="20sp"
         android:textColor="@color/black"
         android:text="Please wait..."
-        android:layout_alignBottom="@+id/loginRequestLoadingProgressBar"
-        android:layout_alignRight="@+id/loginRequestLoadingProgressBar"
-        android:layout_alignLeft="@+id/loginRequestLoadingProgressBar" />
+        android:layout_alignBottom="@+id/progressBar"
+        android:layout_alignRight="@+id/progressBar"
+        android:layout_alignLeft="@+id/progressBar" />
 
 </RelativeLayout>
