@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:hint="Email"
-                android:id="@+id/email"/>
+                android:id="@+id/input_email"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:hint="Password"
-                android:id="@+id/password"/>
+                android:id="@+id/input_password"/>
 
         </android.support.design.widget.TextInputLayout>
         
@@ -87,6 +87,7 @@
         android:text="Please wait..."
         android:layout_alignBottom="@+id/progressBar"
         android:layout_alignRight="@+id/progressBar"
-        android:layout_alignLeft="@+id/progressBar" />
+        android:layout_alignLeft="@+id/progressBar"
+        android:id="@+id/pleaseWait"/>
 
 </RelativeLayout>

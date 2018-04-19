@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         updateUI(currentUser);
 
         mAuth.addAuthStateListener(mAuthListener);
+
+        checkCurrentUser(mAuth.getCurrentUser());
     }
 
     @Override
