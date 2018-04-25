@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.mindandmatters.william.imagegallerytesting.Main.MainActivity;
 import com.mindandmatters.william.imagegallerytesting.R;
 
 /**
@@ -41,60 +42,51 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mPleaseWait = (TextView) findViewById(R.id.pleaseWait);
         mEmail = (EditText) findViewById(R.id.input_email);
         mPassword = (EditText) findViewById(R.id.input_password);
         mContext = LoginActivity.this;
-
-        Log.d(TAG, "onCreate: started. ");
-
+        Log.d(TAG, "onCreate: started.");
 
         mPleaseWait.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
 
         setupFirebaseAuth();
         init();
+
     }
 
     private boolean isStringNull(String string){
-        Log.d(TAG, "Checking if string is null.");
+        Log.d(TAG, "isStringNull: checking string if null.");
+
         if(string.equals("")){
             return true;
         }
-        else {
+        else{
             return false;
         }
     }
 
-    /*
+     /*
     ------------------------------------ Firebase ---------------------------------------------
-     */
-
-    /**
-     * checks to see if the @param 'user' is logged in
-     * @param user
-     */
-    /**
-     * Setup the firebase auth object
      */
 
     private void init(){
 
+        //initialize the button for logging in
         Button btnLogin = (Button) findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: attempting to login.");
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: attempting to log in.");
 
                 String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
 
                 if(isStringNull(email) && isStringNull(password)){
-                    Toast.makeText(mContext, "All fields must be filled!", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                    Toast.makeText(mContext, "You must fill out all the fields", Toast.LENGTH_SHORT).show();
+                }else{
                     mProgressBar.setVisibility(View.VISIBLE);
                     mPleaseWait.setVisibility(View.VISIBLE);
 
@@ -102,34 +94,59 @@ public class LoginActivity extends AppCompatActivity {
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (!task.isSuccessful()){
-                                        // If sign in fails, display a message to the user.
-                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                    Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                                        //updateUI(null);
+                                    // If sign in fails, display a message to the user. If sign in succeeds
+                                    // the auth state listener will be notified and logic to handle the
+                                    // signed in user can be handled in the listener.
+                                    if (!task.isSuccessful()) {
+                                        Log.w(TAG, "signInWithEmail:failed", task.getException());
 
+                                        Toast.makeText(LoginActivity.this, "Login Failed",
+                                                Toast.LENGTH_SHORT).show();
                                         mProgressBar.setVisibility(View.GONE);
                                         mPleaseWait.setVisibility(View.GONE);
                                     }
-                                    else {
-                                        Toast.makeText(LoginActivity.this, "Authenticated.", Toast.LENGTH_SHORT).show();
-
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Log.d(TAG, "signInWithEmail:success");
-                                        FirebaseUser user = mAuth.getCurrentUser();
-
+                                    else{
+                                        Log.d(TAG, "signInWithEmail: successful login");
+                                        Toast.makeText(LoginActivity.this, "Authorized",
+                                                Toast.LENGTH_SHORT).show();
                                         mProgressBar.setVisibility(View.GONE);
                                         mPleaseWait.setVisibility(View.GONE);
+
+                                        /*
+                                         If the user is logged in then navigate to HomeActivity and call 'finish()'
+                                        */
+
+                                        if(mAuth.getCurrentUser() != null){
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
                                     }
 
                                     // ...
                                 }
                             });
                 }
+
+            }
+        });
+
+        TextView linkSignUp = (TextView) findViewById(R.id.link_signup);
+        linkSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating to register screen");
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
     }
+
+    /**
+     * Setup the firebase auth object
+     */
     private void setupFirebaseAuth(){
         Log.d(TAG, "setupFirebaseAuth: setting up firebase auth.");
 
@@ -152,6 +169,17 @@ public class LoginActivity extends AppCompatActivity {
         };
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
 
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
 }
