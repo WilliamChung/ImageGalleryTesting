@@ -11,10 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.mindandmatters.william.imagegallerytesting.R;
+import com.mindandmatters.william.imagegallerytesting.Utils.FirebaseMethods;
 
 /**
  * Created by lappy on 2018-04-19.
@@ -32,25 +34,61 @@ public class RegisterActivity extends AppCompatActivity {
     private Button btnRegister;
     private ProgressBar mProgressBar;
 
+    private FirebaseMethods firebaseMethods;
+
     private static final String TAG = "RegisterActivity";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        mContext = RegisterActivity.this;
+        firebaseMethods = new FirebaseMethods(mContext);
         Log.d(TAG, "onCreate: started. ");
 
-        intiWidgets();
+        initWidgets();
         setupFirebaseAuth();
+        init();
     }
 
-    private void intiWidgets(){
+    private void init(){
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                email = mEmail.getText().toString();
+                password = mPassword.getText().toString();
+                username = mUsername.getText().toString();
+
+                if(checkInputs(email, password, username)){
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mPleaseWait.setVisibility(View.VISIBLE);
+
+                    firebaseMethods.registerNewEmail(email, password, username);
+                }
+            }
+        });
+    }
+
+    private boolean checkInputs(String email, String password, String username){
+        Log.d(TAG, "Check inputs for null values");
+
+        if(email.equals("") || password.equals("") || username.equals("")){
+            Toast.makeText(mContext, "All fields must be filled!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private void initWidgets(){
         Log.d(TAG, "Initializing widgers");
 
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mPleaseWait = (TextView) findViewById(R.id.loadingPleaseWait);
-        mEmail = (EditText) findViewById(R.id.input_email);
-        mPassword = (EditText) findViewById(R.id.input_password);
+        mEmail = (EditText) findViewById(R.id.email);
+        mUsername = (EditText) findViewById(R.id.input_username);
+        mPassword = (EditText) findViewById(R.id.password);
         mContext = RegisterActivity.this;
+        btnRegister = (Button) findViewById(R.id.btn_register);
 
         mProgressBar.setVisibility(View.GONE);
         mPleaseWait.setVisibility(View.GONE);
