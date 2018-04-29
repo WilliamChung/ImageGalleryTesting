@@ -96,6 +96,8 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
+                                    FirebaseUser user = mAuth.getCurrentUser();
+
                                     // If sign in fails, display a message to the user. If sign in succeeds
                                     // the auth state listener will be notified and logic to handle the
                                     // signed in user can be handled in the listener.
@@ -108,20 +110,22 @@ public class LoginActivity extends AppCompatActivity {
                                         mPleaseWait.setVisibility(View.GONE);
                                     }
                                     else{
-                                        Log.d(TAG, "signInWithEmail: successful login");
-                                        Toast.makeText(LoginActivity.this, "Authorized",
-                                                Toast.LENGTH_SHORT).show();
-                                        mProgressBar.setVisibility(View.GONE);
-                                        mPleaseWait.setVisibility(View.GONE);
 
-                                        /*
-                                         If the user is logged in then navigate to HomeActivity and call 'finish()'
-                                        */
-
-                                        if(mAuth.getCurrentUser() != null){
-                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                            startActivity(intent);
-                                            finish();
+                                        try{
+                                            if(user.isEmailVerified()){
+                                                Log.d(TAG, "onComplete: email is verified. Navigating to MainActivity");
+                                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                startActivity(intent);
+                                            }
+                                            else{
+                                                Toast.makeText(mContext, "Email is not verified. \n Check your email inbox.", Toast.LENGTH_SHORT).show();
+                                                mProgressBar.setVisibility(View.GONE);
+                                                mPleaseWait.setVisibility(View.GONE);
+                                                mAuth.signOut();
+                                            }
+                                        }
+                                        catch(NullPointerException e){
+                                            Log.d(TAG, "onComplete: NullPointerException " + e.getMessage());
                                         }
                                     }
 
@@ -142,6 +146,16 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        /*
+        If the user is logged in then navigate to HomeActivity and call 'finish()'
+        */
+
+        if(mAuth.getCurrentUser() != null){
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     /**

@@ -54,11 +54,15 @@ public class FirebaseMethods {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
+
+                            sendVerificationEmail();
+
                             userID = mAuth.getCurrentUser().getUid();
                             Log.w(TAG, "createUserWithEmail:success  User: " + userID);
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-                        } else {
+                        }
+                        else if(!task.isSuccessful()) {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(mContext, "Authentication failed.",
@@ -88,6 +92,27 @@ public class FirebaseMethods {
         return false;
     }
 
+    public void sendVerificationEmail(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(user != null){
+            user.sendEmailVerification()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                //Toast.makeText(mContext, "Failed to Authenticate", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Toast.makeText(mContext, "Failed to Authenticate", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+    }
+
+    //add information to the users node
+    //add information to the user_account_settings node
     public void addNewUser(String email, String username, String description, String website, String profile_photo){
         User user = new User(userID, 1, email, StringManipulation.condenseUsername(username));
 
