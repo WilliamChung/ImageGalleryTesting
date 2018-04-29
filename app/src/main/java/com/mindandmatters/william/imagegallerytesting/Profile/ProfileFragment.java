@@ -28,8 +28,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.mindandmatters.william.imagegallerytesting.Login.LoginActivity;
+import com.mindandmatters.william.imagegallerytesting.Models.User;
+import com.mindandmatters.william.imagegallerytesting.Models.UserAccountSettings;
+import com.mindandmatters.william.imagegallerytesting.Models.UserSettings;
 import com.mindandmatters.william.imagegallerytesting.R;
 import com.mindandmatters.william.imagegallerytesting.Utils.BottomNavigationViewHelper;
+import com.mindandmatters.william.imagegallerytesting.Utils.FirebaseMethods;
+import com.mindandmatters.william.imagegallerytesting.Utils.UniversalImageLoader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,6 +63,7 @@ public class ProfileFragment extends Fragment {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference myRef;
+    private FirebaseMethods mFirebaseMethods;
 
     @Nullable
     @Override
@@ -66,9 +72,9 @@ public class ProfileFragment extends Fragment {
         Log.d(TAG, "onCreateView: started");
 
         mDisplayName = (TextView) view.findViewById(R.id.display_name);
-        mUsername = (TextView) view.findViewById(R.id.username);
-        mWebsite = (TextView) view.findViewById(R.id.website);
-        mDescription = (TextView) view.findViewById(R.id.description);
+        mUsername = (TextView) view.findViewById(R.id.profileName);
+        mWebsite = (TextView) view.findViewById(R.id.display_website);
+        mDescription = (TextView) view.findViewById(R.id.display_description);
         mPosts = (TextView) view.findViewById(R.id.tvposts);
         mFollowers = (TextView) view.findViewById(R.id.tvFollowers);
         mFollowing = (TextView) view.findViewById(R.id.tvFollowing);
@@ -79,12 +85,34 @@ public class ProfileFragment extends Fragment {
         profileMenu = (ImageView) view.findViewById(R.id.profileMenu);
         bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
 
+        mFirebaseMethods = new FirebaseMethods(getActivity());
+
         mContext = getActivity();
 
         setupBottomNavigationView();
         setupToolBar();
 
+        setupFirebaseAuth();
+
         return view;
+    }
+
+    private void setProfileWidgets(UserSettings userSettings){
+        Log.d(TAG, "setProfileWidgets: setting widgets with data from firebase database " + userSettings.toString());
+
+        UserAccountSettings settings = userSettings.getSettings();
+
+        UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
+
+        mDisplayName.setText(settings.getDisplay_name());
+        mUsername.setText(settings.getUsername());
+        mWebsite.setText(settings.getWebsite());
+        mDescription.setText(settings.getDescription());
+        mPosts.setText(String.valueOf(settings.getPosts()));
+        mFollowers.setText(String.valueOf(settings.getFollowers()));
+        mFollowing.setText(String.valueOf(settings.getFollowing()));
+
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void setupToolBar(){
@@ -143,7 +171,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //retrieve user information from database
-
+                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
 
                 //retrieve images for the user
 

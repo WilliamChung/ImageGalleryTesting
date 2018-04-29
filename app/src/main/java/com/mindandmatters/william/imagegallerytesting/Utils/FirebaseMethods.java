@@ -138,7 +138,7 @@ public class FirebaseMethods {
 
     //retrieves the account settings for the currently signed in user
     //database: user_account_settings node
-    private UserSettings getUserAccountSettings(DataSnapshot dataSnapshot){
+    public UserSettings getUserSettings(DataSnapshot dataSnapshot){
         Log.d(TAG, "getUserAccountSettings: retrieving user account settings from firebase");
 
         UserAccountSettings settings = new UserAccountSettings();
