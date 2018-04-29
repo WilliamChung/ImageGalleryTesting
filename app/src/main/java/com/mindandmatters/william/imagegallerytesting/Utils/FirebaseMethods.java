@@ -10,6 +10,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.mindandmatters.william.imagegallerytesting.Models.User;
 
 /**
  * Created by lappy on 2018-04-25.
@@ -58,6 +60,26 @@ public class FirebaseMethods {
                     }
                 });
     }
+
+    public boolean checkIfUsernameExists(String username, DataSnapshot dataSnapshot){
+        Log.d(TAG, "checkIfUsernameExists: check if " + username + " already exists");
+
+        User user = new User();
+
+        for(DataSnapshot ds : dataSnapshot.getChildren()){
+             Log.d(TAG, "checkIfUsernameExists: dataSnapshot: " + ds);
+
+             user.setUsername(ds.getValue(User.class).getUsername());
+             Log.d(TAG, "checkIfUsernameExists: username: " + user.getUsername());
+
+             if(StringManipulation.condenseUsername(user.getUsername()).equals(username)){
+                 Log.d(TAG, "checkIfUsernameExists: FOUND A MATCH: " + user.getUsername());
+                 return true;
+             }
+        }
+        return false;
+    }
+
 
     public void updateUI(FirebaseUser user){
 
