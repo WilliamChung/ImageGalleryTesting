@@ -43,26 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
 
-        //check if user is signed in
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
-
-        mAuth.addAuthStateListener(mAuthListener);
-
-        checkCurrentUser(mAuth.getCurrentUser());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
 
     /*
     ------------------------------------ Firebase ---------------------------------------------
@@ -106,6 +87,27 @@ public class MainActivity extends AppCompatActivity {
                 // ...
             }
         };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //check if user is signed in
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+
+        mAuth.addAuthStateListener(mAuthListener);
+
+        checkCurrentUser(mAuth.getCurrentUser());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     private void updateUI(FirebaseUser currentUser) {
