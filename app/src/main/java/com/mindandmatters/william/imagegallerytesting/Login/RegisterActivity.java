@@ -124,7 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            public void onAuthStateChanged(@NonNull final FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 if (user != null) {
@@ -143,8 +143,11 @@ public class RegisterActivity extends AppCompatActivity {
                                 username = username + append;
                             }
                             //add new user to database
+                            firebaseMethods.addNewUser(email, username, "", "", "");
+                            Toast.makeText(mContext, "Sign up successful: Sending email verification", Toast.LENGTH_SHORT).show();
 
-                            //add new user_account_settings to database
+
+
                         }
 
                         @Override

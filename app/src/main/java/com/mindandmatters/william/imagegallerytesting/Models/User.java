@@ -6,12 +6,13 @@ package com.mindandmatters.william.imagegallerytesting.Models;
 
 public class User {
 
-    private String user_id, username, phone_number, email;
+    private String user_id, username, email;
+    private long phone_number;
 
     public User( ) {
     }
 
-    public User(String user_id, String username, String phone_number, String email) {
+    public User(String user_id, long phone_number, String username, String email) {
         this.user_id = user_id;
         this.username = username;
         this.phone_number = phone_number;
@@ -34,11 +35,11 @@ public class User {
         this.username = username;
     }
 
-    public String getPhone_number() {
+    public long getPhone_number() {
         return phone_number;
     }
 
-    public void setPhone_number(String phone_number) {
+    public void setPhone_number(long phone_number) {
         this.phone_number = phone_number;
     }
 
