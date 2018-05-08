@@ -154,7 +154,7 @@ public class ProfileFragment extends Fragment {
         menuItem.setChecked(true);
     }
 
-        /*
+    /*
     ------------------------------------ Firebase ---------------------------------------------
      */
     /**
