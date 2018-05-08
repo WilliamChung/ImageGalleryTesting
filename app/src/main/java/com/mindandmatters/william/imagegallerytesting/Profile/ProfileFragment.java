@@ -2,12 +2,10 @@ package com.mindandmatters.william.imagegallerytesting.Profile;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,16 +26,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.mindandmatters.william.imagegallerytesting.Login.LoginActivity;
-import com.mindandmatters.william.imagegallerytesting.Models.User;
 import com.mindandmatters.william.imagegallerytesting.Models.UserAccountSettings;
 import com.mindandmatters.william.imagegallerytesting.Models.UserSettings;
 import com.mindandmatters.william.imagegallerytesting.R;
 import com.mindandmatters.william.imagegallerytesting.Utils.BottomNavigationViewHelper;
 import com.mindandmatters.william.imagegallerytesting.Utils.FirebaseMethods;
 import com.mindandmatters.william.imagegallerytesting.Utils.UniversalImageLoader;
-
-import org.w3c.dom.Text;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -111,6 +105,7 @@ public class ProfileFragment extends Fragment {
         });
 
         return view;
+
     }
 
     private void setProfileWidgets(UserSettings userSettings){
@@ -154,7 +149,7 @@ public class ProfileFragment extends Fragment {
         menuItem.setChecked(true);
     }
 
-    /*
+        /*
     ------------------------------------ Firebase ---------------------------------------------
      */
     /**
