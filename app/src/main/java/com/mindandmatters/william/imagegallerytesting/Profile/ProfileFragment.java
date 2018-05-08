@@ -2,6 +2,7 @@ package com.mindandmatters.william.imagegallerytesting.Profile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,8 @@ import com.mindandmatters.william.imagegallerytesting.R;
 import com.mindandmatters.william.imagegallerytesting.Utils.BottomNavigationViewHelper;
 import com.mindandmatters.william.imagegallerytesting.Utils.FirebaseMethods;
 import com.mindandmatters.william.imagegallerytesting.Utils.UniversalImageLoader;
+
+import org.w3c.dom.Text;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -94,6 +97,19 @@ public class ProfileFragment extends Fragment {
 
         setupFirebaseAuth();
 
+        TextView editProfile = (TextView) view.findViewById(R.id.textEditProfile);
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: navigating to " + (mContext.getString(R.string.edit_profile_fragment)));
+
+                 Intent intent = new Intent(getActivity(), AccountSettingsActivity.class );
+                 intent.putExtra(getString(R.string.calling_activity), getString(R.string.profile_activity));
+
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -137,8 +153,6 @@ public class ProfileFragment extends Fragment {
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
     }
-
-
 
         /*
     ------------------------------------ Firebase ---------------------------------------------

@@ -115,7 +115,7 @@ public class FirebaseMethods {
     //add information to the users node
     //add information to the user_account_settings node
     public void addNewUser(String email, String username, String description, String website, String profile_photo){
-        User user = new User(userID, 1, email, StringManipulation.condenseUsername(username));
+        User user = new User(userID, 1, StringManipulation.condenseUsername(username), email);
 
         myRef.child(mContext.getString(R.string.dbname_users))
             .child(userID)
