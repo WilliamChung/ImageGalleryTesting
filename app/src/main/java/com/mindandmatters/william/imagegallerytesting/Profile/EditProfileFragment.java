@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mindandmatters.william.imagegallerytesting.Models.User;
 import com.mindandmatters.william.imagegallerytesting.Models.UserAccountSettings;
 import com.mindandmatters.william.imagegallerytesting.Models.UserSettings;
 import com.mindandmatters.william.imagegallerytesting.R;
@@ -41,6 +42,7 @@ public class EditProfileFragment extends android.support.v4.app.Fragment {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference myRef;
     private FirebaseMethods mFirebaseMethods;
+    private String userID;
 
     //EditProfileFragment Widgets
     private EditText mDisplayName, mUsername, mWebsite, mDescription, mEmail, mPhoneNumber;
@@ -81,6 +83,55 @@ public class EditProfileFragment extends android.support.v4.app.Fragment {
         return view;
     }
 
+    /*
+
+        Retrieves profile data for user, saves changes
+        Checks if username is unique
+
+     */
+
+    private void saveProfileSettings(){
+        final String username = mUsername.getText().toString();
+        final String displayname =mDisplayName.getText().toString();
+        final String website = mWebsite.getText().toString();
+        final String description = mDescription.getText().toString();
+        final String email = mEmail.getText().toString();
+
+        final long phoneNumber = Long.parseLong(mPhoneNumber.getText().toString());
+
+         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+             @Override
+             public void onDataChange(DataSnapshot dataSnapshot) {
+                 User user = new User();
+
+                 for (DataSnapshot ds : dataSnapshot.child(getString(R.string.dbname_users)).getChildren()){
+                    if(ds.getKey().equals(userID)){
+                        user.setUsername(ds.getValue(User.class).getUsername());
+                    }
+                 }
+
+                 Log.d(TAG, "onDataChange: current username:  " + user.getUsername());
+
+
+                 //case 1: no username change
+                 if(user.getUsername().equals(username)){
+
+                 }
+                 //case 2: username change
+                 else{
+
+                 }
+
+
+             }
+
+             @Override
+             public void onCancelled(DatabaseError databaseError) {
+
+             }
+         });
+    }
+
     private void setProfileWidgets(UserSettings userSettings){
         Log.d(TAG, "setProfileWidgets: setting widgets with data from firebase database " + userSettings.toString());
 
@@ -115,6 +166,7 @@ public class EditProfileFragment extends android.support.v4.app.Fragment {
         mAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         myRef = firebaseDatabase.getReference();
+        userID = mAuth.getCurrentUser().getUid();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
