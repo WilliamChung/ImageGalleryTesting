@@ -38,7 +38,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by lappy on 2018-04-11.
  */
 
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends Fragment implements ConfirmPasswordDialog.OnConfirmPasswordListener{
+
+    @Override
+    public void onConfirmPassword(String password) {
+
+        Log.d(TAG, "onConfirmPassword: pasword confirmed, changing email");
+    }
 
     private static final String TAG = "EditProfileFragment";
 
@@ -125,8 +131,12 @@ public class EditProfileFragment extends Fragment {
             //step1 reauth
             //  -confirm password and email
             ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
-            FragmentManager fm = getActivity().getFragmentManager();
-            dialog.show(fm, getString(R.string.confirm_password_dialog));
+            dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
+
+            dialog.setTargetFragment(EditProfileFragment.this, 1);
+
+
+
 
             //step2 check if email already registered
             //  -fetchProvidersForEmail(String email){}
@@ -258,4 +268,6 @@ public class EditProfileFragment extends Fragment {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
+
 }
