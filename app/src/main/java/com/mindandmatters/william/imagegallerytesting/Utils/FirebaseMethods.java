@@ -254,19 +254,19 @@ public class FirebaseMethods {
 
 
         if(display_name != null){
-            myRef.child(mContext.getString(R.string.dbname_users))
+            myRef.child(mContext.getString(R.string.dbname_user_account_settings))
                     .child(userID)
                     .child(mContext.getString(R.string.field_displayname))
                     .setValue(display_name);
         }
         if(description != null){
-            myRef.child(mContext.getString(R.string.dbname_users))
+            myRef.child(mContext.getString(R.string.dbname_user_account_settings))
                     .child(userID)
                     .child(mContext.getString(R.string.field_description))
                     .setValue(description);
         }
         if(website != null){
-            myRef.child(mContext.getString(R.string.dbname_users))
+            myRef.child(mContext.getString(R.string.dbname_user_account_settings))
                     .child(userID)
                     .child(mContext.getString(R.string.field_website))
                     .setValue(website);
