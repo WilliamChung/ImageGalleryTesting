@@ -249,6 +249,37 @@ public class FirebaseMethods {
                 .setValue(username);
     }
 
+    public void updateUserAccountSettings(String display_name, String description, String website, long phone_number){
+        Log.d(TAG, "updateUserAccountSettings: updating user account settings" );
+
+
+        if(display_name != null){
+            myRef.child(mContext.getString(R.string.dbname_users))
+                    .child(userID)
+                    .child(mContext.getString(R.string.field_displayname))
+                    .setValue(display_name);
+        }
+        if(description != null){
+            myRef.child(mContext.getString(R.string.dbname_users))
+                    .child(userID)
+                    .child(mContext.getString(R.string.field_description))
+                    .setValue(description);
+        }
+        if(website != null){
+            myRef.child(mContext.getString(R.string.dbname_users))
+                    .child(userID)
+                    .child(mContext.getString(R.string.field_website))
+                    .setValue(website);
+        }
+        if(phone_number != 0){
+            myRef.child(mContext.getString(R.string.dbname_users))
+                    .child(userID)
+                    .child(mContext.getString(R.string.field_phoneNumber))
+                    .setValue(phone_number);
+
+        }
+    }
+
     public void updateEmail(String email) {
         Log.d(TAG, "updateEmail: updating username to " + email);
 
