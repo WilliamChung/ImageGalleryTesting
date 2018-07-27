@@ -72,6 +72,19 @@ public class NextActivity extends AppCompatActivity{
         setImage();
     }
 
+    private void method(){
+        //1. create datamodel for photos
+
+        //2. add properties to photo objects(caption, date, imageURL, photo_id, tags)
+
+        //3. count the number of photos the user already has
+
+        //4. upload photo to firebase storage and insert 2 new nodes in firebase db:
+            //photos node
+            //user photos node
+
+    }
+
     private void setImage(){
         Intent intent = getIntent();
         ImageView image = (ImageView) findViewById(R.id.imageShare);
