@@ -21,6 +21,7 @@
 
     <!-- Intent extras -->
     <string name="calling_activity">calling_activity</string>
+    <string name="selected_image">selected_image</string>
 
     <!-- Activity names -->
     <string name="profile_activity">profile_activity</string>
@@ -31,5 +32,6 @@
     <string name="photo">PHOTO</string>
     <string name="open_camera">Open Camera</string>
     <string name="next">Next</string>
+
 
 </resources>

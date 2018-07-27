@@ -1,5 +1,6 @@
 package com.mindandmatters.william.imagegallerytesting.Share;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -40,6 +41,7 @@ public class GalleryFragment extends Fragment {
 
     //vars
     private ArrayList<String> directories;
+    private String mSelectedImage;
 
     //widgets
     private GridView gridView;
@@ -76,6 +78,9 @@ public class GalleryFragment extends Fragment {
                 Log.d(TAG, "onClick: navigating to next screen");
 
                 //logic to open gallery, this will also be able to be accessed from EditProfile>Change profile picture
+                Intent intent = new Intent(getActivity(), NextActivity.class);
+                intent.putExtra(getString(R.string.selected_image), mSelectedImage);
+                startActivity(intent);
             }
         });
 
@@ -93,10 +98,17 @@ public class GalleryFragment extends Fragment {
             directories = FileSearch.getDirectoryPaths(filePaths.PICTURES);
         }
 
+        ArrayList<String> directoryNames = new ArrayList<>();
+        for(int i = 0; i < directories.size(); i++){
+            int index = directories.get(i).lastIndexOf("/");
+            String string = directories.get(i).substring(index).replace("/", "");
+            directoryNames.add(string);
+        }
+
         directories.add(filePaths.CAMERA);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item,directories);
+                android.R.layout.simple_spinner_item,directoryNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         directorySpinner.setAdapter(adapter);
 
@@ -131,6 +143,7 @@ public class GalleryFragment extends Fragment {
 
         //set first image to be displayed when the activity fragment view is inflated
         setImage(imgURLs.get(0), galleryImage, mAppend);
+        mSelectedImage = imgURLs.get(0);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -138,6 +151,7 @@ public class GalleryFragment extends Fragment {
                 Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(position));
 
                 setImage(imgURLs.get(position), galleryImage, mAppend);
+                mSelectedImage = imgURLs.get(position);
             }
         });
 
