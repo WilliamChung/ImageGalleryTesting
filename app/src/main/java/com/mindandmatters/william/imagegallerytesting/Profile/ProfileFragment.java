@@ -149,9 +149,9 @@ public class ProfileFragment extends Fragment {
         menuItem.setChecked(true);
     }
 
-        /*
+    /*
     ------------------------------------ Firebase ---------------------------------------------
-     */
+    */
     /**
      * Setup the firebase auth object
      */
