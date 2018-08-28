@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mindandmatters.william.imagegallerytesting.Models.User;
 import com.mindandmatters.william.imagegallerytesting.Models.UserAccountSettings;
 import com.mindandmatters.william.imagegallerytesting.Models.UserSettings;
@@ -32,6 +34,7 @@ public class FirebaseMethods {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
     private String userID;
+    private StorageReference mStorageReference;
 
     private Context mContext;
 
@@ -40,6 +43,7 @@ public class FirebaseMethods {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
         mContext = context;
+        mStorageReference = FirebaseStorage.getInstance().getReference();
 
         if(mAuth.getCurrentUser() != null){
             userID = mAuth.getCurrentUser().getUid();
@@ -57,6 +61,29 @@ public class FirebaseMethods {
 
         }
         return count;
+    }
+
+    public void uploadNewPhoto(String photoType, String caption, int count, String imgUrl){
+        Log.d(TAG, "uploadNewPhoto: attempting to upload new photo");
+
+        FilePaths filePaths = new FilePaths();
+
+        //case1 new photo
+        if(photoType.equals(mContext.getString(R.string.new_photo))){
+            Log.d(TAG, "uploadNewPhoto: upload new photo");
+
+            String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            StorageReference storageReference = mStorageReference
+                    .child(filePaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/photo" + (count + 1));
+        }
+
+        //case2 new profile photo
+        else if(photoType.equals(mContext.getString(R.string.profile_photo))){
+            Log.d(TAG, "uploadNewPhoto: upload new profile photo");
+
+        }
+
+
     }
 
     /**

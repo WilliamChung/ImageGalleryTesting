@@ -21,6 +21,11 @@
     <string name="field_phoneNumber">phone_number</string>
     <string name="auth_failed">Auth failed</string>
 
+    <!-- photo types -->
+    <string name="new_photo">new_photo</string>
+    <string name="profile_photo">profile_photo</string>
+
+
     <!-- Intent extras -->
     <string name="calling_activity">calling_activity</string>
     <string name="selected_image">selected_image</string>
