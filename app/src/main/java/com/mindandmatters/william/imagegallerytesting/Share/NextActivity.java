@@ -38,12 +38,14 @@ public class NextActivity extends AppCompatActivity{
 
     //vars
     private static final String mAppend = "file:/";
+    private int imageCount = 0;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_next);
+        mFirebaseMethods = new FirebaseMethods(NextActivity.this);
 
         //Log.d(TAG, "onCreate: get the chosen image: " + getIntent().getStringExtra(getString(R.string.selected_image)));
 
@@ -104,6 +106,7 @@ public class NextActivity extends AppCompatActivity{
         mAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         myRef = firebaseDatabase.getReference();
+        Log.d(TAG, "onDataChange: image count: " + imageCount);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -124,8 +127,8 @@ public class NextActivity extends AppCompatActivity{
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-
+                imageCount = mFirebaseMethods.getImageCount(dataSnapshot);
+                Log.d(TAG, "onDataChange: image count: " + imageCount);
             }
 
             @Override
