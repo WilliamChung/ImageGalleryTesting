@@ -102,7 +102,7 @@ public class FirebaseMethods {
         myRef.child(mContext.getString(R.string.dbname_photos)).child(newPhotoKey).setValue(photo);
     }
 
-    public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgUrl){
+    public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgUrl, Bitmap bm){
         Log.d(TAG, "uploadNewPhoto: attempting to upload new photo");
 
         FilePaths filePaths = new FilePaths();
@@ -115,8 +115,11 @@ public class FirebaseMethods {
             StorageReference storageReference = mStorageReference
                     .child(filePaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/photo" + (count + 1));
 
-            //conver img url to bitmap
-            Bitmap bm = ImageManager.getBitmap(imgUrl);
+            //convert img url to bitmap
+            if(bm == null){
+                bm = ImageManager.getBitmap(imgUrl);
+            }
+
             byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
 
             UploadTask uploadTask = null;
@@ -162,17 +165,16 @@ public class FirebaseMethods {
         else if(photoType.equals(mContext.getString(R.string.profile_photo))){
             Log.d(TAG, "uploadNewPhoto: upload new profile photo");
 
-            ((AccountSettingsActivity)mContext).setupViewPager(
-                    ((AccountSettingsActivity) mContext).pagerAdapter
-                            .getFragmentNumber(mContext.getString(R.string.edit_profile_fragment))
-            );
+
 
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
             StorageReference storageReference = mStorageReference
                     .child(filePaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/profile_photo");
 
-            //conver img url to bitmap
-            Bitmap bm = ImageManager.getBitmap(imgUrl);
+            //convert img url to bitmap
+            if(bm == null){
+                bm = ImageManager.getBitmap(imgUrl);
+            }
             byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
 
             UploadTask uploadTask = null;
@@ -187,6 +189,11 @@ public class FirebaseMethods {
 
                     //insert into user_account_settings node
                     setProfilePhoto(firebaseUrl.toString());
+
+                    ((AccountSettingsActivity)mContext).setupViewPager(
+                            ((AccountSettingsActivity) mContext).pagerAdapter
+                                    .getFragmentNumber(mContext.getString(R.string.edit_profile_fragment))
+                    );
 
                 }
             }).addOnFailureListener(new OnFailureListener() {
