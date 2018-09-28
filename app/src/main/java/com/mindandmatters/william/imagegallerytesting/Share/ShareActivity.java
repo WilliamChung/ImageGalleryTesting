@@ -1,5 +1,6 @@
 package com.mindandmatters.william.imagegallerytesting.Share;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -65,6 +66,13 @@ public class ShareActivity extends AppCompatActivity {
 
         tabLayout.getTabAt(0).setText(R.string.gallery);
         tabLayout.getTabAt(1).setText(R.string.photo);
+    }
+
+    @SuppressLint("WrongConstant")
+    public int getTask(){
+        Log.d(TAG, "getTask: " + getIntent().getFlags());
+
+        return getIntent().getFlags();
     }
 
     //verify all permissions passed

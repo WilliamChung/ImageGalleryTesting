@@ -29,6 +29,7 @@
     <!-- Intent extras -->
     <string name="calling_activity">calling_activity</string>
     <string name="selected_image">selected_image</string>
+    <string name="return_to_fragment">return_to_fragment</string>
 
     <!-- Activity names -->
     <string name="profile_activity">profile_activity</string>
