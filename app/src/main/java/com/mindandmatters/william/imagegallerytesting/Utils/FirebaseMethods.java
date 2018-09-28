@@ -27,6 +27,7 @@ import com.mindandmatters.william.imagegallerytesting.Models.Photo;
 import com.mindandmatters.william.imagegallerytesting.Models.User;
 import com.mindandmatters.william.imagegallerytesting.Models.UserAccountSettings;
 import com.mindandmatters.william.imagegallerytesting.Models.UserSettings;
+import com.mindandmatters.william.imagegallerytesting.Profile.AccountSettingsActivity;
 import com.mindandmatters.william.imagegallerytesting.R;
 
 import java.text.SimpleDateFormat;
@@ -160,6 +161,11 @@ public class FirebaseMethods {
         //case2 new profile photo
         else if(photoType.equals(mContext.getString(R.string.profile_photo))){
             Log.d(TAG, "uploadNewPhoto: upload new profile photo");
+
+            ((AccountSettingsActivity)mContext).setupViewPager(
+                    ((AccountSettingsActivity) mContext).pagerAdapter
+                            .getFragmentNumber(mContext.getString(R.string.edit_profile_fragment))
+            );
 
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
             StorageReference storageReference = mStorageReference
