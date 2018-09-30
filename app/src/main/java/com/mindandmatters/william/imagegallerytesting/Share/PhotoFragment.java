@@ -79,10 +79,19 @@ public class PhotoFragment extends Fragment {
             bitmap = (Bitmap) data.getExtras().get("data");
 
             if(isRootTask()) {
+                try {
+                    Log.d(TAG, "onActivityResult: received bitmap from camera: " + bitmap);
 
+                    Intent intent = new Intent(getActivity(), NextActivity.class);
+                    intent.putExtra(getString(R.string.selected_bitmap), bitmap);
+                    startActivity(intent);
+                }
+                catch (NullPointerException e){
+                    Log.d(TAG, "onActivityResult: NullPointerException: " + e.getMessage());
+                }
             }
             else {
-                try{
+                try {
                     Log.d(TAG, "onActivityResult: received bitmap from camera: " + bitmap);
 
                     Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
