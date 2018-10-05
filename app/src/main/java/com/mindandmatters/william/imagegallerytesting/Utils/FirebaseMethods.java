@@ -80,7 +80,7 @@ public class FirebaseMethods {
     }
 
     private String getTimestamp(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z", Locale.CANADA);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
         sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));
         return sdf.format(new Date());
     }
@@ -91,6 +91,7 @@ public class FirebaseMethods {
         String tags = StringManipulation.getTags(caption);
         String newPhotoKey = myRef.child(mContext.getString(R.string.dbname_photos)).push().getKey();
         Photo photo = new Photo();
+        photo.setCaption(caption);
         photo.setDate_created(getTimestamp());
         photo.setImage_path(url);
         photo.setTags(tags);
