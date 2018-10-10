@@ -146,8 +146,11 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-                    //photos.add(singleSnapshot.getValue(Photo.class));
+                    photos.add(singleSnapshot.getValue(Photo.class));
                 }
+
+                //Photo p = dataSnapshot.getValue(Photo.class);
+                //photos.add(p);
 
                 //setup image grid
                 int gridWidth = getResources().getDisplayMetrics().widthPixels;
