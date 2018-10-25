@@ -24,3 +24,4 @@ public class ExampleInstrumentedTest {
         assertEquals("com.mindandmatters.william.imagegallerytesting", appContext.getPackageName());
     }
 }
+
