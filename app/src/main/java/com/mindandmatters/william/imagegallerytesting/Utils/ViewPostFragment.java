@@ -3,6 +3,7 @@ package com.mindandmatters.william.imagegallerytesting.Utils;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -12,15 +13,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.mindandmatters.william.imagegallerytesting.Models.Photo;
+import com.mindandmatters.william.imagegallerytesting.Models.UserAccountSettings;
 import com.mindandmatters.william.imagegallerytesting.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -34,6 +46,13 @@ public class ViewPostFragment extends Fragment {
 
     private static final String TAG = "ViewPostFragment";
 
+    //FireBase auth
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference myRef;
+    private FirebaseMethods mFirebaseMethods;
+
     public ViewPostFragment(){
         super();
         setArguments(new Bundle());
@@ -43,6 +62,10 @@ public class ViewPostFragment extends Fragment {
     //vars
     private Photo mPhoto;
     private Integer mActivityNumber = 0;
+    private String photoUsername;
+    private String photoUrl;
+    private UserAccountSettings mUserAccountSettings;
+
 
     //widgets
     private SquareImageView mPostImage;
@@ -77,24 +100,50 @@ public class ViewPostFragment extends Fragment {
             Log.e(TAG, "onCreateView: NullPointerException: " + e.getMessage() );
         }
 
+        setupFirebaseAuth();
         setupBottomNavigationView();
-        setupWidgets();
+        getPhotoDetails();
+        //setupWidgets();
 
         return  view;
     }
 
+    private void getPhotoDetails(){
+        Log.d(TAG, "getPhotoDetails: retrieving photo details.");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference
+                .child(getString(R.string.dbname_user_account_settings))
+                .orderByChild(getString(R.string.field_user_id))
+                .equalTo(mPhoto.getUser_id());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for ( DataSnapshot singleSnapshot :  dataSnapshot.getChildren()){
+                    mUserAccountSettings = singleSnapshot.getValue(UserAccountSettings.class);
+                }
+                setupWidgets();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: query cancelled.");
+            }
+        });
+    }
+
     private void setupWidgets(){
-        String timestampDiff = getTimeStampDifference();
+        String timestampDiff = getTimestampDifference();
         if(!timestampDiff.equals("0")){
             mTimestamp.setText(timestampDiff + " DAYS AGO");
-        }
-        else {
+        }else{
             mTimestamp.setText("TODAY");
         }
+        UniversalImageLoader.setImage(mUserAccountSettings.getProfile_photo(), mProfileImage, null, "");
+        mUsername.setText(mUserAccountSettings.getUsername());
     }
 
     //returns a string representing the number of days ago the post was made
-    private String getTimeStampDifference(){
+    private String getTimestampDifference(){
         Log.d(TAG, "getTimeStampDifference: getting timestamp difference");
 
         String difference = "";
@@ -152,5 +201,50 @@ public class ViewPostFragment extends Fragment {
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
+    }
+
+    /*
+    ------------------------------------ Firebase ---------------------------------------------
+    */
+    /**
+     * Setup the firebase auth object
+     */
+    private void setupFirebaseAuth(){
+        Log.d(TAG, "setupFirebaseAuth: setting up firebase auth.");
+
+        mAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = firebaseDatabase.getReference();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 }
