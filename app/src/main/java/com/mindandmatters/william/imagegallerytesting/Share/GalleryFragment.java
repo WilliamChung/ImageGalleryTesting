@@ -28,6 +28,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by lappy on 2018-03-22.
@@ -163,8 +164,13 @@ public class GalleryFragment extends Fragment {
         gridView.setAdapter(adapter);
 
         //set first image to be displayed when the activity fragment view is inflated
-        setImage(imgURLs.get(0), galleryImage, mAppend);
-        mSelectedImage = imgURLs.get(0);
+        try{
+            setImage(imgURLs.get(0), galleryImage, mAppend);
+            mSelectedImage = imgURLs.get(0);
+        }
+        catch (IndexOutOfBoundsException e){
+            Log.e(TAG, "setupGridView: IndexOutOfBoundsException: " + e.getMessage());
+        }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
