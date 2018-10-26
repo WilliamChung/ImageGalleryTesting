@@ -16,10 +16,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.mindandmatters.william.imagegallerytesting.Models.Photo;
 import com.mindandmatters.william.imagegallerytesting.R;
 import com.mindandmatters.william.imagegallerytesting.Utils.BottomNavigationViewHelper;
 import com.mindandmatters.william.imagegallerytesting.Utils.GridImageAdapter;
 import com.mindandmatters.william.imagegallerytesting.Utils.UniversalImageLoader;
+import com.mindandmatters.william.imagegallerytesting.Utils.ViewPostFragment;
 
 import java.util.ArrayList;
 
@@ -27,8 +29,26 @@ import java.util.ArrayList;
  * Created by lappy on 2018-03-21.
  */
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements ProfileFragment.OnGridImageSelectedListener{
     private static final String TAG = "ProfileActivity";
+
+    @Override
+    public void onGridImageSelected(Photo photo, int activityNumber) {
+        Log.d(TAG, "onGridImageSelected: selected an image gridview: " + photo.toString());
+
+        ViewPostFragment fragment = new ViewPostFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.photo), photo);
+        args.putInt(getString(R.string.activity_number), activityNumber);
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.view_post_fragment));
+        transaction.commit();
+    }
+
+
     private Context mContext = ProfileActivity.this;
     private ProgressBar mProgressBar;
 
@@ -44,13 +64,6 @@ public class ProfileActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: started.");
 
         init();
-
-        //setupBottomNavigationView();
-        //setupToolBar();
-        //setupActivityWidgets();
-        //setProfileImage();
-
-        //tempGridSetup();
     }
 
     private void init(){
@@ -63,73 +76,4 @@ public class ProfileActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    /*
-    private void tempGridSetup(){
-        ArrayList<String> imgURLs = new ArrayList<>();
-        imgURLs.add("https://i.redd.it/9piqni8gd9q01.jpg");
-        imgURLs.add("https://i.redd.it/9bf67ygj710z.jpg");
-        imgURLs.add("https://c1.staticflickr.com/5/4276/34102458063_7be616b993_o.jpg");
-        imgURLs.add("http://i.imgur.com/EwZRpvQ.jpg");
-        imgURLs.add("http://i.imgur.com/JTb2pXP.jpg");
-        imgURLs.add("https://i.redd.it/59kjlxxf720z.jpg");
-        imgURLs.add("https://i.redd.it/pwduhknig00z.jpg");
-        imgURLs.add("https://i.redd.it/clusqsm4oxzy.jpg");
-        imgURLs.add("https://i.redd.it/svqvn7xs420z.jpg");
-        imgURLs.add("http://i.imgur.com/j4AfH6P.jpg");
-        imgURLs.add("https://i.redd.it/89cjkojkl10z.jpg");
-        imgURLs.add("https://i.redd.it/aw7pv8jq4zzy.jpg");
-
-        setupImageGrid(imgURLs);
-    }
-
-    public void setupImageGrid(ArrayList<String> imgURL){
-        GridView gridView = (GridView) findViewById(R.id.gridView);
-
-        int gridWidth = getResources().getDisplayMetrics().widthPixels;
-        int imageWidth = gridWidth/NUM_GRID_COLS;
-        gridView.setColumnWidth(imageWidth);
-
-        GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview, "",imgURL);
-        gridView.setAdapter(adapter);
-    }
-
-    public void setProfileImage(){
-        Log.d(TAG, "setProfileImage: setting profile photo");
-        String imgURL = "www.androidcentral.com/sites/androidcentral.com/files/styles/xlarge/public/article_images/2016/08/ac-lloyd.jpg?itok=bb72IeLf";
-        UniversalImageLoader.setImage(imgURL, profilePhoto, mProgressBar, "https://");
-    }
-
-    public void setupActivityWidgets(){
-
-        mProgressBar = (ProgressBar) findViewById(R.id.profileProgressBar);
-        mProgressBar.setVisibility(View.GONE);
-        profilePhoto = (ImageView) findViewById(R.id.profile_photo);
-    }
-
-    private void setupToolBar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.profileToolBar);
-        setSupportActionBar(toolbar);
-
-        ImageView profileMenu = (ImageView) findViewById(R.id.profileMenu);
-        profileMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: navigating to account settings");
-                Intent intent = new Intent(mContext, AccountSettingsActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
-    private void setupBottomNavigationView(){
-        Log.d(TAG, "setupBottomNavigationView: setting up bottom navigation view");
-        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(mContext, bottomNavigationViewEx);
-
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
-    }
-    */
 }

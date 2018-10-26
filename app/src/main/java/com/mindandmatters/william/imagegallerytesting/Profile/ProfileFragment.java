@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -47,6 +48,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
+
+    public interface OnGridImageSelectedListener {
+        void onGridImageSelected(Photo photo, int activityNumber);
+    }
+
+    OnGridImageSelectedListener mOnGridImageSelectedListener;
+
 
     private TextView mPosts, mFollowers, mFollowing, mDisplayName, mUsername, mWebsite, mDescription;
     private ProgressBar mProgressBar;
@@ -118,6 +126,18 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    @Override
+    public void onAttach(Context context) {
+        try {
+            mOnGridImageSelectedListener = (OnGridImageSelectedListener) getActivity();
+        }
+        catch (ClassCastException e){
+            Log.e(TAG, "onAttach: ClassCastException: " + e.getMessage());
+        }
+
+        super.onAttach(context);
+    }
+
     private void setProfileWidgets(UserSettings userSettings){
         Log.d(TAG, "setProfileWidgets: setting widgets with data from firebase database " + userSettings.toString());
 
@@ -167,6 +187,14 @@ public class ProfileFragment extends Fragment {
                 GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview,
                         "", imgUrls);
                 gridView.setAdapter(adapter);
+
+
+                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        mOnGridImageSelectedListener.onGridImageSelected(photos.get(position), ACTIVITY_NUM);
+                    }
+                });
             }
 
             @Override

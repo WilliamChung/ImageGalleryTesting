@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">ImageGalleryTesting</string>
 
+    <!-- fragment names -->
     <string name="edit_profile_fragment">Edit Profile</string>
+    <string name="view_post_fragment">View Post</string>
     <string name="sign_out_fragment">Sign Out</string>
     <string name="profile_fragment">Profile</string>
 
@@ -35,6 +37,8 @@
     <!-- Activity names -->
     <string name="profile_activity">profile_activity</string>
 
+    <!-- Bundle arg names -->
+    <string name="activity_number">activity_number</string>
 
     <!-- Strings -->
     <string name="gallery">GALLERY</string>
