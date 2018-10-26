@@ -19,6 +19,13 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.mindandmatters.william.imagegallerytesting.Models.Photo;
 import com.mindandmatters.william.imagegallerytesting.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 /**
  * Created by lappy on 2018-10-25.
  */
@@ -71,8 +78,44 @@ public class ViewPostFragment extends Fragment {
         }
 
         setupBottomNavigationView();
+        setupWidgets();
 
         return  view;
+    }
+
+    private void setupWidgets(){
+        String timestampDiff = getTimeStampDifference();
+        if(!timestampDiff.equals("0")){
+            mTimestamp.setText(timestampDiff + " DAYS AGO");
+        }
+        else {
+            mTimestamp.setText("TODAY");
+        }
+    }
+
+    //returns a string representing the number of days ago the post was made
+    private String getTimeStampDifference(){
+        Log.d(TAG, "getTimeStampDifference: getting timestamp difference");
+
+        String difference = "";
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
+        sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));
+        Date timestamp;
+        Date today = c.getTime();
+        sdf.format(today);
+        final String photoTimestamp = mPhoto.getDate_created();
+
+        try{
+            timestamp = sdf.parse(photoTimestamp);
+            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24)));
+        }
+        catch (ParseException e){
+            Log.e(TAG, "getTimeStampDifference: ParseException: " + e.getMessage());
+            difference = "0";
+        }
+
+        return difference;
     }
 
     //retrieve photo from incoming bundle from ProfileActivity interface
