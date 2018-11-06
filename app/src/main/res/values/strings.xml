@@ -23,6 +23,7 @@
     <string name="field_website">website</string>
     <string name="field_phoneNumber">phone_number</string>
     <string name="auth_failed">Auth failed</string>
+    <string name="field_likes">likes</string>
 
     <!-- photo types -->
     <string name="new_photo">new_photo</string>
