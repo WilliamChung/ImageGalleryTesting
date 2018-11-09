@@ -3,8 +3,6 @@ package com.mindandmatters.william.imagegallerytesting.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.w3c.dom.Comment;
-
 import java.lang.ref.SoftReference;
 import java.util.List;
 
