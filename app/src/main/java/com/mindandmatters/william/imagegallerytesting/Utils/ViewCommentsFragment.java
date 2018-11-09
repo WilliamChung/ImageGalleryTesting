@@ -91,8 +91,6 @@ public class ViewCommentsFragment extends Fragment {
         mComments = new ArrayList<>();
         mContext = getActivity();
 
-
-
         try{
             mPhoto = getPhotoFromBundle();
             setupFirebaseAuth();
