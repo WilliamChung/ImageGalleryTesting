@@ -63,12 +63,11 @@ public class ViewCommentsFragment extends Fragment {
         setArguments(new Bundle());
     }
 
-    //FireBase auth
+    //firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseDatabase firebaseDatabase;
+    private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
-    private FirebaseMethods mFirebaseMethods;
 
     //widgets
     private ImageView mBackArrow, mCheckMark;
@@ -78,7 +77,6 @@ public class ViewCommentsFragment extends Fragment {
     //vars
     private Photo mPhoto;
     private ArrayList<Comment> mComments;
-
 
     @Nullable
     @Override
@@ -121,12 +119,12 @@ public class ViewCommentsFragment extends Fragment {
                     mComment.setText("");
                     closeKeyboard();
                 }else{
-                    Toast.makeText(getActivity(), "you can't post a blank comment", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "You can't post a blank comment!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        return  view;
+        return view;
     }
 
     private void closeKeyboard(){
@@ -165,30 +163,33 @@ public class ViewCommentsFragment extends Fragment {
 
     }
 
-
-    //retrieve photo from incoming bundle from ProfileActivity interface
-    private Photo getPhotoFromBundle(){
-        Log.d(TAG, "getPhotoFromBundle: arguments: " + getArguments());
-
-        Bundle bundle = this.getArguments();
-        if(bundle != null){
-            return bundle.getParcelable(getString(R.string.photo));
-        }
-        else {
-            return null;
-        }
-    }
-
     private String getTimestamp(){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
         sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));
         return sdf.format(new Date());
     }
 
+    /**
+     * retrieve the photo from the incoming bundle from profileActivity interface
+     * @return
+     */
+    private Photo getPhotoFromBundle(){
+        Log.d(TAG, "getPhotoFromBundle: arguments: " + getArguments());
 
-    /*
+        Bundle bundle = this.getArguments();
+        if(bundle != null) {
+            return bundle.getParcelable(getString(R.string.photo));
+        }else{
+            return null;
+        }
+    }
+
+
+
+           /*
     ------------------------------------ Firebase ---------------------------------------------
-    */
+     */
+
     /**
      * Setup the firebase auth object
      */
@@ -196,13 +197,14 @@ public class ViewCommentsFragment extends Fragment {
         Log.d(TAG, "setupFirebaseAuth: setting up firebase auth.");
 
         mAuth = FirebaseAuth.getInstance();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = firebaseDatabase.getReference();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+
 
                 if (user != null) {
                     // User is signed in
@@ -215,52 +217,9 @@ public class ViewCommentsFragment extends Fragment {
             }
         };
 
-        Query query = myRef
-                .child(getString(R.string.dbname_photos))
-                .orderByChild(getString(R.string.field_photo_id))
-                .equalTo(mPhoto.getPhoto_id());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
-
-                    Photo photo = new Photo();
-                    Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
-                    photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-                    photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                    photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                    photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                    photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-                    photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-
-//                    List<Comment> commentsList = new ArrayList<Comment>();
-//                    for(DataSnapshot dSnapshot : singleSnapshot
-//                            .child(getString(R.string.field_likes)).getChildren()){
-//                        Comment comment = new Comment();
-//                        comment.setUser_id(dataSnapshot.getValue(Like.class).getUser_id());
-//                        commentList.add(comment);
-//                    }
-
-//                    List<Like> likesList = new ArrayList<Like>();
-//                    for(DataSnapshot dSnapshot : singleSnapshot
-//                            .child(getString(R.string.field_likes)).getChildren()){
-//                        Like like = new Like();
-//                        like.setUser_id(dataSnapshot.getValue(Like.class).getUser_id());
-//                        likesList.add(like);
-//                    }
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: query cancelled");
-            }
-        });
 
     }
+
 
     @Override
     public void onStart() {
@@ -275,4 +234,5 @@ public class ViewCommentsFragment extends Fragment {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
 }
