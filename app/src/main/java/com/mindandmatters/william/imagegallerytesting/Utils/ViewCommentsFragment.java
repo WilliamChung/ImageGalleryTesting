@@ -95,10 +95,10 @@ public class ViewCommentsFragment extends Fragment {
             mPhoto = getPhotoFromBundle();
             setupFirebaseAuth();
 
-        }catch (NullPointerException e){
+        }
+        catch (NullPointerException e){
             Log.e(TAG, "onCreateView: NullPointerException: " + e.getMessage() );
         }
-
 
         return view;
     }
@@ -125,8 +125,10 @@ public class ViewCommentsFragment extends Fragment {
         });
     }
 
+    //closes keyboard after submitting comment
     private void closeKeyboard(){
         View view = getActivity().getCurrentFocus();
+
         if(view != null){
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
