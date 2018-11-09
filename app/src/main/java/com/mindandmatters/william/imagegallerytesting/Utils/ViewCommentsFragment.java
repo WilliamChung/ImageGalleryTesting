@@ -1,6 +1,7 @@
 package com.mindandmatters.william.imagegallerytesting.Utils;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,9 +14,13 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.mindandmatters.william.imagegallerytesting.Models.Comment;
 import com.mindandmatters.william.imagegallerytesting.Models.Like;
 import com.mindandmatters.william.imagegallerytesting.Models.Photo;
 import com.mindandmatters.william.imagegallerytesting.Models.User;
@@ -52,6 +58,11 @@ public class ViewCommentsFragment extends Fragment {
 
     private static final String TAG = "ViewCommentsFragment";
 
+    public ViewCommentsFragment(){
+        super();
+        setArguments(new Bundle());
+    }
+
     //FireBase auth
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -59,20 +70,120 @@ public class ViewCommentsFragment extends Fragment {
     private DatabaseReference myRef;
     private FirebaseMethods mFirebaseMethods;
 
+    //widgets
+    private ImageView mBackArrow, mCheckMark;
+    private EditText mComment;
+    private ListView mListView;
+
     //vars
     private Photo mPhoto;
+    private ArrayList<Comment> mComments;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_comments, container, false);
+        mBackArrow = (ImageView) view.findViewById(R.id.backArrow);
+        mCheckMark = (ImageView) view.findViewById(R.id.ivPostComment);
+        mComment = (EditText) view.findViewById(R.id.comment);
+        mListView = (ListView) view.findViewById(R.id.listView);
+        mComments = new ArrayList<>();
+
+        setupFirebaseAuth();
+
+        try{
+            mPhoto = getPhotoFromBundle();
+
+        }catch (NullPointerException e){
+            Log.e(TAG, "onCreateView: NullPointerException: " + e.getMessage() );
+        }
 
 
+        Comment firstComment = new Comment();
+        firstComment.setComment(mPhoto.getCaption());
+        firstComment.setUser_id(mPhoto.getUser_id());
+        firstComment.setDate_created(mPhoto.getDate_created());
+
+        mComments.add(firstComment);
+        CommentListAdapter adapter = new CommentListAdapter(getActivity(),
+                R.layout.layout_comment, mComments);
+        mListView.setAdapter(adapter);
+
+        mCheckMark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(!mComment.getText().toString().equals("")){
+                    Log.d(TAG, "onClick: attempting to submit new comment.");
+                    addNewComment(mComment.getText().toString());
+
+                    mComment.setText("");
+                    closeKeyboard();
+                }else{
+                    Toast.makeText(getActivity(), "you can't post a blank comment", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         return  view;
     }
 
+    private void closeKeyboard(){
+        View view = getActivity().getCurrentFocus();
+        if(view != null){
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+
+    private void addNewComment(String newComment){
+        Log.d(TAG, "addNewComment: adding new comment: " + newComment);
+
+        String commentID = myRef.push().getKey();
+
+        Comment comment = new Comment();
+        comment.setComment(newComment);
+        comment.setDate_created(getTimestamp());
+        comment.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        //insert into photos node
+        myRef.child(getString(R.string.dbname_photos))
+                .child(mPhoto.getPhoto_id())
+                .child(getString(R.string.field_comments))
+                .child(commentID)
+                .setValue(comment);
+
+        //insert into user_photos node
+        myRef.child(getString(R.string.dbname_user_photos))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(mPhoto.getPhoto_id())
+                .child(getString(R.string.field_comments))
+                .child(commentID)
+                .setValue(comment);
+
+    }
+
+
+    //retrieve photo from incoming bundle from ProfileActivity interface
+    private Photo getPhotoFromBundle(){
+        Log.d(TAG, "getPhotoFromBundle: arguments: " + getArguments());
+
+        Bundle bundle = this.getArguments();
+        if(bundle != null){
+            return bundle.getParcelable(getString(R.string.photo));
+        }
+        else {
+            return null;
+        }
+    }
+
+    private String getTimestamp(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
+        sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));
+        return sdf.format(new Date());
+    }
 
 
     /*
@@ -123,13 +234,13 @@ public class ViewCommentsFragment extends Fragment {
                     photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
                     photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
-                    List<Comment> commentsList = new ArrayList<Comment>();
-                    for(DataSnapshot dSnapshot : singleSnapshot
-                            .child(getString(R.string.field_likes)).getChildren()){
-                        Comment comment = new Comment();
-                        comment.setUser_id(dataSnapshot.getValue(Like.class).getUser_id());
-                        commentList.add(comment);
-                    }
+//                    List<Comment> commentsList = new ArrayList<Comment>();
+//                    for(DataSnapshot dSnapshot : singleSnapshot
+//                            .child(getString(R.string.field_likes)).getChildren()){
+//                        Comment comment = new Comment();
+//                        comment.setUser_id(dataSnapshot.getValue(Like.class).getUser_id());
+//                        commentList.add(comment);
+//                    }
 
 //                    List<Like> likesList = new ArrayList<Like>();
 //                    for(DataSnapshot dSnapshot : singleSnapshot

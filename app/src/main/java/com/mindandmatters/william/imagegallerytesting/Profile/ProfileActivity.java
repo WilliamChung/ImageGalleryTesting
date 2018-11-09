@@ -21,6 +21,7 @@ import com.mindandmatters.william.imagegallerytesting.R;
 import com.mindandmatters.william.imagegallerytesting.Utils.BottomNavigationViewHelper;
 import com.mindandmatters.william.imagegallerytesting.Utils.GridImageAdapter;
 import com.mindandmatters.william.imagegallerytesting.Utils.UniversalImageLoader;
+import com.mindandmatters.william.imagegallerytesting.Utils.ViewCommentsFragment;
 import com.mindandmatters.william.imagegallerytesting.Utils.ViewPostFragment;
 
 import java.util.ArrayList;
@@ -82,6 +83,16 @@ public class ProfileActivity extends AppCompatActivity implements
 
     @Override
     public void onCommentThreadSelectedListener(Photo photo) {
+        Log.d(TAG, "onCommentThreadSelectedListener:  selected a comment thread");
 
+        ViewCommentsFragment fragment = new ViewCommentsFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.photo), photo);
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.view_comments_fragment));
+        transaction.commit();
     }
 }
