@@ -2,6 +2,7 @@ package com.mindandmatters.william.imagegallerytesting.Utils;
 
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -51,17 +52,24 @@ public class ViewPostFragment extends Fragment {
 
     private static final String TAG = "ViewPostFragment";
 
+    public interface OnCommentThreadSelectedListener{
+        void onCommentThreadSelectedListener(Photo photo);
+    }
+    OnCommentThreadSelectedListener mOnCommentThreadSelectedListener;
+
+    public ViewPostFragment(){
+        super();
+        setArguments(new Bundle());
+    }
+
+
+
     //FireBase auth
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference myRef;
     private FirebaseMethods mFirebaseMethods;
-
-    public ViewPostFragment(){
-        super();
-        setArguments(new Bundle());
-    }
 
 
     //vars
@@ -81,7 +89,7 @@ public class ViewPostFragment extends Fragment {
     private SquareImageView mPostImage;
     private BottomNavigationViewEx bottomNavigationView;
     private TextView mBackLabel, mCaption, mUsername, mTimestamp, mLikes;
-    private ImageView mBackArrow, mEllipses, mHeartRed, mHeartWhite, mProfileImage;
+    private ImageView mBackArrow, mEllipses, mHeartRed, mHeartWhite, mProfileImage, mComment;
 
 
     @Nullable
@@ -101,6 +109,7 @@ public class ViewPostFragment extends Fragment {
         mHeartWhite = (ImageView) view.findViewById(R.id.image_heart);
         mProfileImage = (ImageView) view.findViewById(R.id.profile_photo);
         mLikes = (TextView) view.findViewById(R.id.image_likes);
+        mComment = (ImageView) view.findViewById(R.id.image_speech_bubble);
 
         mHeart = new Heart(mHeartRed, mHeartWhite);
         mGestureDetector = new GestureDetector(getActivity(), new GestureListener());
@@ -121,6 +130,17 @@ public class ViewPostFragment extends Fragment {
 
 
         return  view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            mOnCommentThreadSelectedListener = (OnCommentThreadSelectedListener) getActivity();
+        }
+        catch (ClassCastException e){
+            Log.e(TAG, "onAttach: ClassCastException: " + e.getMessage() );
+        }
     }
 
     private void getLikesString(){
@@ -332,6 +352,22 @@ public class ViewPostFragment extends Fragment {
 
         mLikes.setText(mLikesString);
         mCaption.setText(mPhoto.getCaption());
+
+        mBackArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating back");
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
+        mComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating back");
+
+            }
+        });
 
         if(mLikedByCurrentUser) {
             mHeartWhite.setVisibility(View.GONE);

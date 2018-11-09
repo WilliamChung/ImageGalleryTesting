@@ -29,7 +29,9 @@ import java.util.ArrayList;
  * Created by lappy on 2018-03-21.
  */
 
-public class ProfileActivity extends AppCompatActivity implements ProfileFragment.OnGridImageSelectedListener{
+public class ProfileActivity extends AppCompatActivity implements
+        ProfileFragment.OnGridImageSelectedListener,
+        ViewPostFragment.OnCommentThreadSelectedListener{
     private static final String TAG = "ProfileActivity";
 
     @Override
@@ -78,4 +80,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileFragmen
         transaction.commit();
     }
 
+    @Override
+    public void onCommentThreadSelectedListener(Photo photo) {
+
+    }
 }
