@@ -104,7 +104,7 @@ public class ViewCommentsFragment extends Fragment {
     }
 
     private void setupWidgets(){
-        CommentListAdapter adapter = new CommentListAdapter(getActivity(),
+        CommentListAdapter adapter = new CommentListAdapter(mContext,
                 R.layout.layout_comment, mComments);
         mListView.setAdapter(adapter);
 
@@ -121,6 +121,15 @@ public class ViewCommentsFragment extends Fragment {
                 }else{
                     Toast.makeText(getActivity(), "You can't post a blank comment!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        mBackArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating back");
+
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }
@@ -216,6 +225,18 @@ public class ViewCommentsFragment extends Fragment {
                 // ...
             }
         };
+
+        if(mPhoto.getComments().size() == 0){
+            mComments.clear();
+            Comment firstComment = new Comment();
+            firstComment.setComment(mPhoto.getCaption());
+            firstComment.setUser_id(mPhoto.getUser_id());
+            firstComment.setDate_created(mPhoto.getDate_created());
+
+            mComments.add(firstComment);
+            mPhoto.setComments(mComments);
+            setupWidgets();
+        }
 
         myRef.child(mContext.getString(R.string.dbname_photos))
                 .child(mPhoto.getPhoto_id())
