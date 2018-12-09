@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.mindandmatters.william.imagegallerytesting.Models.Photo;
@@ -23,6 +24,7 @@ import com.mindandmatters.william.imagegallerytesting.Utils.GridImageAdapter;
 import com.mindandmatters.william.imagegallerytesting.Utils.UniversalImageLoader;
 import com.mindandmatters.william.imagegallerytesting.Utils.ViewCommentsFragment;
 import com.mindandmatters.william.imagegallerytesting.Utils.ViewPostFragment;
+import com.mindandmatters.william.imagegallerytesting.Utils.ViewProfileFragment;
 
 import java.util.ArrayList;
 
@@ -74,11 +76,35 @@ public class ProfileActivity extends AppCompatActivity implements
     private void init(){
         Log.d(TAG,"init: inflating " + getString(R.string.profile_fragment));
 
-        ProfileFragment fragment = new ProfileFragment();
-        FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, fragment);
-        transaction.addToBackStack(getString(R.string.profile_fragment));
-        transaction.commit();
+        Intent intent = getIntent();
+        //navigate to other profile
+        if(intent.hasExtra(getString(R.string.calling_activity))){
+            Log.d(TAG, "init: searching for user object attached as intent extra");
+
+            if(intent.hasExtra(getString(R.string.intent_user))){
+                ViewProfileFragment fragment = new ViewProfileFragment();
+                Bundle args = new Bundle();
+                args.putParcelable(getString(R.string.intent_user), intent.getParcelableExtra(getString(R.string.intent_user)));
+                fragment.setArguments(args);
+
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.container, fragment);
+                transaction.addToBackStack(getString(R.string.view_profile_fragment));
+                transaction.commit();
+
+            }
+            else {
+                Toast.makeText(mContext, "Something went wrong.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        //navigate to own profile
+        else {
+            ProfileFragment fragment = new ProfileFragment();
+            FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.container, fragment);
+            transaction.addToBackStack(getString(R.string.profile_fragment));
+            transaction.commit();
+        }
     }
 
     @Override

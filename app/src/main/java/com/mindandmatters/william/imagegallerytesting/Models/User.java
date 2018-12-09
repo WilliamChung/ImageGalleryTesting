@@ -1,10 +1,13 @@
 package com.mindandmatters.william.imagegallerytesting.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by lappy on 2018-04-28.
  */
 
-public class User {
+public class User implements Parcelable{
 
     private String user_id, username, email;
     private long phone_number;
@@ -18,6 +21,25 @@ public class User {
         this.phone_number = phone_number;
         this.email = email;
     }
+
+    protected User(Parcel in) {
+        user_id = in.readString();
+        username = in.readString();
+        email = in.readString();
+        phone_number = in.readLong();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getUser_id() {
         return user_id;
@@ -59,5 +81,18 @@ public class User {
                 ", phone_number='" + phone_number + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(user_id);
+        dest.writeString(username);
+        dest.writeString(email);
+        dest.writeLong(phone_number);
     }
 }
