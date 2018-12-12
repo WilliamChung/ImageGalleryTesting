@@ -25,7 +25,8 @@
         </activity>
         <activity android:name=".Notifications.NotificationsActivity"/>
         <activity android:name=".Profile.ProfileActivity"/>
-        <activity android:name=".Search.SearchActivity"/>
+        <activity android:name=".Search.SearchActivity"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".Share.ShareActivity"/>
         <activity android:name=".Profile.AccountSettingsActivity"/>
         <activity android:name=".Login.LoginActivity"/>

@@ -75,7 +75,7 @@
                     android:id="@+id/display_name"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:text="Mahnhoon Lee"
+                    android:text="user.name"
                     android:textSize="16sp"/>
 
                 <TextView
@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/display_description"
                     android:textColor="@color/black"
-                    android:text="This is my bio."
+                    android:text="bio"
                     android:textSize="16sp"
                     android:layout_marginTop="5dp"/>
 
@@ -92,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/display_website"
                     android:textColor="@color/blue"
-                    android:text="http://www.graceandpeace.com"
+                    android:text="http://www.website.com"
                     android:textSize="16sp"
                     android:layout_marginTop="5dp" />
 
