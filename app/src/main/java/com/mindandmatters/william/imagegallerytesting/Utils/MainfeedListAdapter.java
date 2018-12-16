@@ -125,9 +125,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: loading comment thread for " + getItem(position).getPhoto_id());
 
-                ((MainActivity)mContext).onCommentThreadSelected(getItem(position), holder.settings);
-
-                //going to need to do something else??
+                ((MainActivity)mContext).onCommentThreadSelected(getItem(position),
+                        mContext.getString(R.string.main_activity));
+                ((MainActivity)mContext).hideLayout();
             }
         });
 
@@ -193,10 +193,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     holder.comment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((MainActivity)mContext).onCommentThreadSelected(getItem(position), holder.settings);
-
-                            //another thing
-                        }
+                            ((MainActivity)mContext).onCommentThreadSelected(getItem(position),
+                                    mContext.getString(R.string.main_activity));
+                            ((MainActivity)mContext).hideLayout();                        }
                     });
                 }
             }
@@ -365,7 +364,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                                 String[] splitUsers = holder.users.toString().split(",");
 
-                                if (holder.users.toString().contains(holder.user.getUsername() + ",")) {
+                                if (holder.users.toString().contains(currentUsername + ",")) {
                                     holder.likedByCurrentUser = true;
                                 } else {
                                     holder.likedByCurrentUser = false;

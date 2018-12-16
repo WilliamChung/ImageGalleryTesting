@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,16 +32,26 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private Context mContext = MainActivity.this;
     private static final int ACTIVITY_NUM = 0;
+    private static final int MAIN_FRAGMENT = 1;
 
     //FireBase auth
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    //widgets
+    private ViewPager mViewPager;
+    private FrameLayout mFrameLayout;
+    private RelativeLayout mRelativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: starting");
+
+        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
+        mFrameLayout = (FrameLayout) findViewById(R.id.container);
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
 
         setupFirebaseAuth();
 
@@ -47,13 +60,13 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager();
     }
 
-    public void onCommentThreadSelected(Photo photo, UserAccountSettings settings){
+    public void onCommentThreadSelected(Photo photo, String callingActivity){
         Log.d(TAG, "onCommentThreadSelected: selected a comment thread");
 
         ViewCommentsFragment fragment = new ViewCommentsFragment();
         Bundle args = new Bundle();
-        args.putParcelable(getString(R.string.bundle_photo), photo);
-        args.putParcelable(getString(R.string.bundle_user_account_settings), settings);
+        args.putParcelable(getString(R.string.photo), photo);
+        args.putString(getString(R.string.main_activity), getString(R.string.main_activity));
         fragment.setArguments(args);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -116,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         updateUI(currentUser);
 
         mAuth.addAuthStateListener(mAuthListener);
+        mViewPager.setCurrentItem(MAIN_FRAGMENT);
 
         checkCurrentUser(mAuth.getCurrentUser());
     }
@@ -142,11 +156,10 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new CameraFragment());
         adapter.addFragment(new MainFragment());
         adapter.addFragment(new MessagesFragment());
-        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
-        viewPager.setAdapter(adapter);
+        mViewPager.setAdapter(adapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(mViewPager);
 
         //set icons
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_camera);
@@ -154,6 +167,26 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_message);
     }
 
+    public void hideLayout(){
+        Log.d(TAG, "hideLayout: hiding layout");
+        mRelativeLayout.setVisibility(View.GONE);
+        mFrameLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void showLayout(){
+        Log.d(TAG, "hideLayout: showing layout");
+        mRelativeLayout.setVisibility(View.VISIBLE);
+        mFrameLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if(mFrameLayout.getVisibility() == View.VISIBLE){
+            showLayout();
+        }
+    }
 
     //bottom navigation view setup
     private void setupBottomNavigationView(){

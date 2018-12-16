@@ -32,6 +32,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.mindandmatters.william.imagegallerytesting.Main.MainActivity;
+import com.mindandmatters.william.imagegallerytesting.Main.MainFragment;
 import com.mindandmatters.william.imagegallerytesting.Models.Comment;
 import com.mindandmatters.william.imagegallerytesting.Models.Like;
 import com.mindandmatters.william.imagegallerytesting.Models.Photo;
@@ -129,7 +131,15 @@ public class ViewCommentsFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating back");
 
-                getActivity().getSupportFragmentManager().popBackStack();
+                if(getCallingActivityFromBundle().equals(getString(R.string.main_activity))){
+                    getActivity().getSupportFragmentManager().popBackStack();
+                    ((MainActivity)getActivity()).showLayout();
+                }
+                else{
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+
+
             }
         });
     }
@@ -188,6 +198,17 @@ public class ViewCommentsFragment extends Fragment {
         Bundle bundle = this.getArguments();
         if(bundle != null) {
             return bundle.getParcelable(getString(R.string.photo));
+        }else{
+            return null;
+        }
+    }
+
+    private String getCallingActivityFromBundle(){
+        Log.d(TAG, "getPhotoFromBundle: arguments: " + getArguments());
+
+        Bundle bundle = this.getArguments();
+        if(bundle != null) {
+            return bundle.getString(getString(R.string.main_activity));
         }else{
             return null;
         }
