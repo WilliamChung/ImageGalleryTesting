@@ -23,12 +23,28 @@ import com.mindandmatters.william.imagegallerytesting.Models.Photo;
 import com.mindandmatters.william.imagegallerytesting.Models.UserAccountSettings;
 import com.mindandmatters.william.imagegallerytesting.R;
 import com.mindandmatters.william.imagegallerytesting.Utils.BottomNavigationViewHelper;
+import com.mindandmatters.william.imagegallerytesting.Utils.MainfeedListAdapter;
 import com.mindandmatters.william.imagegallerytesting.Utils.SectionsPagerAdapter;
 import com.mindandmatters.william.imagegallerytesting.Utils.UniversalImageLoader;
 import com.mindandmatters.william.imagegallerytesting.Utils.ViewCommentsFragment;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements MainfeedListAdapter.OnLoadMoreItemsListener{
+
+
+    @Override
+    public void onLoadMoreItems() {
+        Log.d(TAG, "onLoadMoreItems: displaying more photos");
+
+        MainFragment fragment = (MainFragment) getSupportFragmentManager()
+                .findFragmentByTag("android:switcher:" + R.id.viewpager_container + ":" + mViewPager.getCurrentItem());
+
+        if(fragment != null){
+            fragment.displayMorePhotos();
+        }
+    }
+
     private static final String TAG = "MainActivity";
     private Context mContext = MainActivity.this;
     private static final int ACTIVITY_NUM = 0;

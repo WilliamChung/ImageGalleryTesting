@@ -40,9 +40,11 @@ public class MainFragment extends Fragment {
     
     //vars
     private ArrayList<Photo> mPhotos;
+    private ArrayList<Photo> mPaginatedPhotos;
     private ArrayList<String> mFollowing;
     private ListView mListView;
     private MainfeedListAdapter mAdapter;
+    private int mResults;
 
     @Nullable
     @Override
@@ -75,6 +77,7 @@ public class MainFragment extends Fragment {
                     mFollowing.add(singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString());
                 }
 
+                mFollowing.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 //get photos
                 getPhotos();
             }
@@ -147,16 +150,70 @@ public class MainFragment extends Fragment {
     }
 
     private void displayPhotos(){
-        if(mPhotos != null){
-            Collections.sort(mPhotos, new Comparator<Photo>() {
-                @Override
-                public int compare(Photo o1, Photo o2) {
-                    return o2.getDate_created().compareTo(o1.getDate_created());
-                }
-            });
 
-            mAdapter = new MainfeedListAdapter(getActivity(), R.layout.layout_main_feed_list_item, mPhotos);
-            mListView.setAdapter(mAdapter);
+        mPaginatedPhotos = new ArrayList<>();
+
+        if(mPhotos != null){
+            try{
+                Collections.sort(mPhotos, new Comparator<Photo>() {
+                    @Override
+                    public int compare(Photo o1, Photo o2) {
+                        return o2.getDate_created().compareTo(o1.getDate_created());
+                    }
+                });
+
+                int iterations = mPhotos.size();
+
+                if(iterations > 10){
+                    iterations = 10;
+                }
+
+                mResults = 10;
+                for(int i = 0; i < iterations; i++){
+                    mPaginatedPhotos.add(mPhotos.get(i));
+                }
+
+                mAdapter = new MainfeedListAdapter(getActivity(), R.layout.layout_main_feed_list_item, mPaginatedPhotos);
+                mListView.setAdapter(mAdapter);
+            }
+            catch (NullPointerException e){
+                Log.e(TAG, "displayPhotos: NullPointerException" + e.getMessage());
+            }
+            catch (IndexOutOfBoundsException e){
+                Log.e(TAG, "displayPhotos: IndexOutOfBoundsException" + e.getMessage());
+            }
+        }
+    }
+
+    public void displayMorePhotos(){
+        Log.d(TAG, "displayMorePhotos: display more photos");
+
+        try{
+            if(mPhotos.size() > mResults && mPhotos.size() > 0){
+                int iterations;
+
+                if(mPhotos.size() > (mResults + 10)){
+                    Log.d(TAG, "displayMorePhotos: there are greater than 10 more photos");
+                    iterations = 10;
+                }
+                else{
+                    Log.d(TAG, "displayMorePhotos: there are less than 10 more photos");
+                    iterations = mPhotos.size() - mResults;
+                }
+
+                //add new photos to paginated results
+                for(int i = mResults; i < mResults + iterations; i++){
+                    mPaginatedPhotos.add(mPhotos.get(i));
+                }
+                mResults = mResults + iterations;
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+        catch (NullPointerException e){
+            Log.e(TAG, "displayPhotos: NullPointerException" + e.getMessage());
+        }
+        catch (IndexOutOfBoundsException e){
+            Log.e(TAG, "displayPhotos: IndexOutOfBoundsException" + e.getMessage());
         }
     }
 }
