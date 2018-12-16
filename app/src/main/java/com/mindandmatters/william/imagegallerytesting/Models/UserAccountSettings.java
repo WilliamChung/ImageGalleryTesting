@@ -1,10 +1,13 @@
 package com.mindandmatters.william.imagegallerytesting.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by lappy on 2018-04-28.
  */
 
-public class UserAccountSettings {
+public class UserAccountSettings implements Parcelable{
 
     private String description, display_name, profile_photo, username, website, user_id;
     private long followers, following, posts;
@@ -110,5 +113,15 @@ public class UserAccountSettings {
                 ", following=" + following +
                 ", posts=" + posts +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }
